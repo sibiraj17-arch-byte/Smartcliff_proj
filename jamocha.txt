@@ -1,0 +1,71 @@
+
+
+2. Split Array Largest Sum
+
+
+
+import java.util.*;
+
+class Solution {
+    public int splitArray(int[] nums, int k) {
+        int left = 0, right = 0;
+        for (int num : nums) {
+            left = Math.max(left, num);   // lower bound = max element
+            right += num;                 // upper bound = sum of all elements
+        }
+
+        int result = right;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (canSplit(nums, k, mid)) {
+                result = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return result;
+    }
+
+    private boolean canSplit(int[] nums, int k, int maxSumAllowed) {
+        int count = 1, currentSum = 0;
+        for (int num : nums) {
+            if (currentSum + num > maxSumAllowed) {
+                count++;
+                currentSum = num;
+                if (count > k) return false;
+            } else {
+                currentSum += num;
+            }
+        }
+        return true;
+    }
+}
+
+public class SplitArrayLargestSum {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Input example:
+        // n = 5
+        // arr = 7 2 5 10 8
+        // k = 2
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+
+        int[] arr = new int[n];
+        System.out.println("Enter array elements:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.print("Enter number of subarrays (k): ");
+        int k = sc.nextInt();
+
+        Solution sol = new Solution();
+        int result = sol.splitArray(arr, k);
+
+        System.out.println("Minimum Largest Sum = " + result);
+    }
+}
